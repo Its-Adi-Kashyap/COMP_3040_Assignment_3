@@ -44,4 +44,4 @@ Modes are all the modes that are available fot a particular route. It returns th
 ```
 Here, a list of all the modes are returned which cointains `Name` is the mode name and `Time` is the estimated time of travel for that given mode.  
 
-### Example:
+### Example::
