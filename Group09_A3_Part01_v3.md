@@ -6,16 +6,13 @@ The Transit API enables users to access comprehensive information about various 
 
 The API offers the following endpoints. 
 
-- `GET /api/route/{start point}&{end point}`
-- `GET /api/route/{id}`
-- `GET /api/mode/{route_id}`
+- `GET /api/route?start_point=value&end_point=value&mode=value`
 
 ##### Parameter:
 
-* start_point (string) - The place where the route begins (required).
-* end_point (string) - The final point of the route (required).
-* route_id (int) - The ID of the route (required).
-
+* start_point (string) - The place where the route begins.(optional)
+* end_point (string) - The final point of the route. (optional)
+* mode (string) - The mode of transport. (optional)
 
 ### Resources:  
 
@@ -27,7 +24,7 @@ The Route resource returns the specified route based on the provided parameters.
 
 ```JSON
 {
-    "Mode": "string",
+    "Mode": [{ "Name": "string","Time": "string"},....],
     "City": "string",
     "Start Point": "string",
     "End Point": "string",
@@ -39,62 +36,59 @@ The Route resource returns the specified route based on the provided parameters.
 
 In this response, Mode represents the method of travel (e.g., bus, train, car),City is where the transit is located in, Start_Point is the location where the transit originates, and End_Point is the final destination. Duration is the estimated time it takes to travel the route, Frequency indicates the interval between two consecutive trips, and Stops list the names of all stations along the way. 
 
-#### 2. Modes 
-
-Modes represent all the available transportation options for a particular route. This resource returns the following object:
-
-```JSON
-{
-    "Modes": [{ "Name": "string","Time": "string"},....]
-}
-    
-```
-
-In this response, a list of all the modes is returned, with each item containing the Name of the transportation mode and the estimated time of travel for that specific mode.
 
 ### Example:
 
-1. `GET /api/route/Winnipeg&Churchill`
-    * On a STATUS Code 200 OK the response is:
+1. `GET /api/route?start_point=Winnipeg`
+    * On a STATUS Code 200 OK the response is a list of all the routes with start point as winnipeg, one of the example of the route is given below:
     ```JSON
     {
-        "Mode": "Train",
-        "City": "Winnipeg"
-        "Start Point": "Union Station Winnipeg",
-        "End Point": "Churchill",
-        "Duration": "2 days",
-        "Frequency": "Once a week",
-        "Stops": ["The Pas","Pukatawagan","Thompson"]
+        {
+            "Mode": ["Train","Bus","Plane"],
+            "City": "Winnipeg"
+            "Start Point": "Winnipeg",
+            "End Point": "Churchill",
+            "Duration": "2 days",
+            "Frequency": "Once a week",
+            "Stops": ["The Pas","Pukatawagan","Thompson"]
+        },....
     }
     ```
     * On a STATUS Code of 400 it returns ***INVALID_REQUEST***
     * On a STATUS Code of 404 it returns ***NO_ROUTE_FOUND***
     
-2. `GET /api/route/5`
-    * On a STATUS Code of 200 it returns:
+2. `GET /api/route?end_point=Osborn Station`
+    * On a STATUS Code of 200 it returns a list of all the destinations that end at Osborn station:
     ```JSON
-    {
-        "Mode": "Bus",
-        "City": "Winnipeg",
-        "Start Point": "Chancellor Matheson",
-        "End Point": "Osborn Station",
-        "Duration": "15 mins",
-        "Frequency": "Every 15 minutes",
-        "Stops": ["Pembina@Bison Nort","SouthWest Transit Way@Chancellor Station","SouthWest Transit Way@Plaza"]
+    {   
+        {
+            "Mode": ["Bus","Train"],
+            "City": "Winnipeg",
+            "Start Point": "Chancellor Matheson",
+            "End Point": "Osborn Station",
+            "Duration": "15 mins",
+            "Frequency": "Every 15 minutes",
+            "Stops": ["Pembina@Bison Nort","SouthWest Transit Way@Chancellor Station","SouthWest Transit Way@Plaza"]
+        },...
     }
     ```
     * On a STATUS Code of 400 it returns ***INVALID_REQUEST***
     * On a STATUS Code of 404 it returns ***NO_ROUTE_FOUND***
     
-3.  `GET /api/mode/12`
+3.  `GET /api/route?mode=Bus`
     * On a STATUS Code of 200 it returns:
     ```JSON
-    {
-      {"Name": "Bus","Time": "3 hours"},
-      {"Name": "Train","Time": "6 hours"},
-      {"Name": "Plane","Time": "1 hours"}
-      
-    }
+        {
+            {
+                "Mode": ["Bus"],
+                "City": "Winnipeg",
+                "Start Point": "Chancellor Matheson",
+                "End Point": "Osborn Station",
+                "Duration": "15 mins",
+                "Frequency": "Every 15 minutes",
+                "Stops": ["Pembina@Bison Nort","SouthWest Transit Way@Chancellor Station","SouthWest Transit Way@Plaza"]
+            },...
+         }
     ```
     * On a STATUS Code of 400 it returns ***INVALID_REQUEST***
     * On a STATUS Code of 404 it returns ***NO_ROUTE_FOUND***
